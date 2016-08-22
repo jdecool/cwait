@@ -1,0 +1,17 @@
+language: go
+
+install:
+  - go get github.com/go-sql-driver/mysql
+
+before_deploy:
+  - make release
+
+deploy:
+  provider: releases
+  api_key:
+    secure: FgsUR18ZOOHZg3X4BtwJ0VPLkqRP+/cy3oZN78m5qtcnSOxMSYmpNtyw+Q5HCIHdWSpfKm7Fa6745A9FjjhKgz3lKsblxEoQLSV4Cd4I2ef+BnavbRpZnx0GQQShyD2vNpXFovja8Ey5u0Bwlz3i/tkggbdlbbsKrnCAMKuRcqe62faVqtpbEcI6gvpoMX+UHEEMcc8PJT/+J9/+PLQB11s2tAX5lwUT20DPGRuHifQQv1BVbM5er6kTIAt/WvdGI8gIV+tOYTMMTMUgOqrhbWQ/yS+ihgpfK9YgX7KpyHqczt7TEq9yOH7EdThPO/9K1yDTzP9dgwLn+BjmKtFO/4nnPr0usAB+remP9kdDI7KRJwHe0RYnGMlITjU3CnMfC3If1qCbLWIG7n2QQ2cf6LKRVJOjcl/In2GKH2oGVtFbOW98rJdhpfIDYgiC2+TR9AW7tWYBBJQM/JfOCUA8nec0hifRq60tGQnQpiYnOzAmgQeACbO4ZuCo7DLVnLGKFhUmJgUHqzofVMim3spDtqQhOy7n3FI7ozw5En5ttsGM/ywmYUzReZbZsyJ9PYRQmZUGL1Labd2eSSvbbaVkK4Zzt3mWAQw+vr/rikcavVrNnxZUMrE7CENjLE0rWYgLQpmJrJkAH2AtqXIqwZaGjpUOG0x2K6jzrTMuwMCJg+0=
+  file: dist/releases/*.tar.gz
+  skip_cleanup: true
+  on:
+    repo: jdecool/cwait
+    tags: true
