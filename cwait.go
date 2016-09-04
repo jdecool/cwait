@@ -7,6 +7,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"strings"
 	"sync"
 	"time"
 
@@ -50,7 +51,7 @@ func main() {
 				}()
 
 			case "mysql":
-				dsn := generateDsn(u)
+				dsn := generateMysqlDsn(u)
 
 				wg.Add(1)
 				go func() {
@@ -111,8 +112,13 @@ func main() {
 	}
 }
 
-func generateDsn(u *url.URL) string {
-	var dsn string
+func generateMysqlDsn(u *url.URL) string {
+	var (
+		dsn  string
+		host string
+		port string
+	)
+
 	if u.User != nil {
 		dsn += u.User.String()
 	}
@@ -121,7 +127,16 @@ func generateDsn(u *url.URL) string {
 		dsn += "@"
 	}
 
-	dsn += "tcp(" + u.Host + ")/"
+	if strings.Contains(u.Host, ":") {
+		var parts = strings.Split(u.Host, ":")
+		host = parts[0]
+		port = parts[1]
+	} else {
+		host = u.Host
+		port = "3306"
+	}
+
+	dsn += "tcp(" + host + ":" + port + ")/"
 
 	return dsn
 }
