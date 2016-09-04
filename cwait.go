@@ -12,7 +12,11 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 )
+
+const protocolMysql = "mysql"
+const protocolPgsql = "postgres"
 
 func main() {
 	var (
@@ -50,8 +54,9 @@ func main() {
 					}
 				}()
 
-			case "mysql":
-				dsn := generateMysqlDsn(u)
+			case protocolMysql:
+			case protocolPgsql:
+				dsn := generateDsn(u)
 
 				wg.Add(1)
 				go func() {
@@ -112,6 +117,21 @@ func main() {
 	}
 }
 
+func generateDsn(u *url.URL) string {
+	switch u.Scheme {
+	case protocolMysql:
+		return generateMysqlDsn(u)
+
+	case protocolPgsql:
+		return generatePostgresDsn(u)
+
+	default:
+		log.Fatalf("Unknow protocol : %s", u.Scheme)
+	}
+
+	return ""
+}
+
 func generateMysqlDsn(u *url.URL) string {
 	var (
 		dsn  string
@@ -137,6 +157,38 @@ func generateMysqlDsn(u *url.URL) string {
 	}
 
 	dsn += "tcp(" + host + ":" + port + ")/"
+
+	return dsn
+}
+
+func generatePostgresDsn(u *url.URL) string {
+	var dsn string
+
+	if u.User != nil {
+		if strings.Contains(u.User.String(), ":") {
+			parts := strings.Split(u.User.String(), ":")
+			dsn += "user=" + parts[0] + " password=" + parts[1]
+		} else {
+			dsn += "user=" + u.User.String()
+		}
+	}
+
+	if len(dsn) > 0 {
+		dsn += " "
+	}
+
+	if strings.Contains(u.Host, ":") {
+		parts := strings.Split(u.Host, ":")
+		dsn += "host=" + parts[0] + " port=" + parts[1]
+	} else {
+		dsn += "host=" + u.Host
+	}
+
+	if len(dsn) > 0 {
+		dsn += " "
+	}
+
+	dsn += "sslmode=disable"
 
 	return dsn
 }
