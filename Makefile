@@ -16,8 +16,10 @@ dist-clean:
 dist: dist-clean
 	mkdir -p dist/linux/386 && GOOS=linux GOARCH=386 go build -ldflags "$(LDFLAGS)" -o dist/linux/386/cwait
 	mkdir -p dist/linux/amd64 && GOOS=linux GOARCH=amd64 go build -ldflags "$(LDFLAGS)" -o dist/linux/amd64/cwait
+	mkdir -p dist/darwin/amd64 && GOOS=darwin GOARCH=amd64 go build -ldflags "$(LDFLAGS)" -o dist/darwin/amd64/cwait
 
 release: dist
 	mkdir -p dist/releases
 	tar -cvzf dist/releases/cwait-linux-386-$(TAG).tar.gz -C dist/linux/386 cwait
 	tar -cvzf dist/releases/cwait-linux-amd64-$(TAG).tar.gz -C dist/linux/amd64 cwait
+	tar -cvzf dist/releases/cwait-darwin-amd64-$(TAG).tar.gz -C dist/darwin/amd64 cwait
