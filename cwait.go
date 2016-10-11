@@ -61,13 +61,19 @@ func main() {
 				go func() {
 					defer wg.Done()
 
+					var (
+						conn *sql.DB
+						err  error
+					)
+					conn = nil
 					for {
-						conn, err := sql.Open(u.Scheme, dsn)
-						if err != nil {
-							log.Printf("Unable to connect: %s", u)
-							time.Sleep(5 * time.Second)
+						if conn == nil {
+							conn, err = sql.Open(u.Scheme, dsn)
+							if err != nil {
+								log.Printf("Unable to connect: %s", u)
+							}
+							defer conn.Close()
 						}
-						defer conn.Close()
 
 						if conn != nil && conn.Ping() != nil {
 							log.Printf("Unable to connect: %s (%s)", u, conn.Ping())
@@ -102,7 +108,7 @@ func main() {
 				}()
 
 			default:
-				log.Fatalf("Nnvalid host protocol provided: %s.", u.Scheme)
+				log.Fatalf("Invalid host protocol provided: %s.", u.Scheme)
 			}
 		}
 
