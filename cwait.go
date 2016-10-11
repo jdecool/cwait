@@ -54,8 +54,7 @@ func main() {
 					}
 				}()
 
-			case protocolMysql:
-			case protocolPgsql:
+			case protocolMysql, protocolPgsql:
 				dsn := generateDsn(u)
 
 				wg.Add(1)
