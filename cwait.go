@@ -72,7 +72,9 @@ func main() {
 						if conn != nil && conn.Ping() != nil {
 							log.Printf("Unable to connect: %s (%s)", u, conn.Ping())
 							time.Sleep(5 * time.Second)
-						} else {
+						}
+
+						if conn != nil && conn.Ping() == nil {
 							return
 						}
 					}
