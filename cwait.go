@@ -163,7 +163,13 @@ func generateMysqlDsn(u *url.URL) string {
 		port = "3306"
 	}
 
-	dsn += "tcp(" + host + ":" + port + ")/"
+	dsn += "tcp(" + host + ":" + port + ")"
+
+	if u.Path != "" {
+		dsn += u.Path
+	} else {
+		dsn += "/"
+	}
 
 	return dsn
 }

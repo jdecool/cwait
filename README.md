@@ -11,4 +11,4 @@ Available protocols:
 * tcp
 * udp
 
-`cwait http://my-url.dev mysql://[user:[password]@][(address)] postgres://[user:[password]@][(address)]`
+`cwait http://my-url.dev mysql://[user:[password]@][(address)[/dbname]] postgres://[user:[password]@][(address)]`
